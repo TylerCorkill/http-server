@@ -1,4 +1,4 @@
-use super::{Response, Request};
+use crate::tust::{Request, Response};
 
 type PathHandler = fn(&Request) -> Option<Response>;
 

@@ -1,9 +1,9 @@
-use crate::server::{Handler, Response};
+use tust::{Handler, Response, Server};
 
-mod server;
+mod tust;
 
 fn main() {
-    server::new(vec![
+    Server::new(vec![
         Handler::get("/test", |req| {
             None
         }),

@@ -1,7 +1,7 @@
 use std::io::prelude::*;
 use std::net::TcpListener;
 
-use super::{Handler, Request, Response};
+use crate::tust::{Handler, Request, Response};
 
 pub struct Server {
     handlers: Vec<Handler>
