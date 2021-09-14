@@ -1,17 +1,24 @@
-use tust::{Handler, Response, Server};
+use tust::Server;
 
 mod tust;
 
 fn main() {
-    Server::new(vec![
-        Handler::get("/test", |req| {
-            None
-        }),
-        Handler::get("/bingo", |req| {
-            Some(Response::success(""))
-        }),
-        Handler::all("*", |req| {
-            Some(Response::error("No Handler Found!"))
-        }),
-    ]).listen(8080);
+    Server::init(|app| {
+        app.get("/test", |req, res| {
+            println!("--{}--", req.body);
+            // TODO: body handle
+            if req.body.trim().is_empty() {
+                println!("--{}--", req.body);
+            } else {
+                res.status_code = 201;
+                res.complete = true;
+            }
+        });
+        app.get("/bingo", |_, res| {
+            res.success("");
+        });
+        app.all("*", |_, res| {
+            res.error("");
+        });
+    }).listen(8080);
 }

@@ -1,17 +1,22 @@
 use std::io::prelude::*;
 use std::net::TcpListener;
 
-use crate::tust::{Handler, Request, Response};
+use crate::tust::{Handler, PathHandler, Request, Response};
 
 pub struct Server {
-    handlers: Vec<Handler>
+    handlers: Vec<Handler>,
+    handler_lock: bool
 }
 
+#[allow(dead_code)]
 impl Server {
-    pub fn new(handlers: Vec<Handler>) -> Self {
-        Server { handlers }
+    pub fn init(start: fn(&mut Server) -> ()) -> Self {
+        let mut server = Server { handlers: vec![], handler_lock: false };
+        start(&mut server);
+        server.handlers.shrink_to_fit();
+        return server;
     }
-    pub fn listen(self, port: u16) {
+    pub fn listen(&self, port: u16) {
         let address = format!("127.0.0.1:{}", port);
         let listener = TcpListener::bind(address).unwrap();
 
@@ -21,23 +26,21 @@ impl Server {
 
             stream.read(&mut buffer).unwrap();
 
-            let req = Request::new(String::from_utf8_lossy(&buffer[..]).as_ref());
+            let mut req = Request::new(String::from_utf8_lossy(&buffer[..]).as_ref());
+            let mut res = Response::new();
 
-            println!("{} {}", req.method, req.path);
+            print!("{} {} ", req.method, req.path);
 
             for h in &self.handlers {
-                if h.path.eq(req.path.as_str()) | h.path.eq("*") {
-                    if h.method.is_empty() | h.method.eq(req.method.as_str()) {
-                        let res = (h.handler)(&req);
-                        if res.is_some() {
-                            let Response { status_code, status_text, http_version, body } = res.unwrap();
-                            let mut response_text = format!("{} {} {}\r\n\r\n", http_version, status_code, status_text);
-                            response_text.push_str(&body);
+                if req.matches(h) {
+                    (h.handler)(&mut req, &mut res);
+                    if res.complete {
+                        println!("{} {}", res.status_code, res.status_text);
 
-                            stream.write(response_text.as_bytes()).unwrap();
-                            stream.flush().unwrap();
-                            break;
-                        }
+                        stream.write(res.format().as_bytes()).unwrap();
+                        stream.flush().unwrap();
+
+                        break;
                     }
                 }
             }
@@ -53,4 +56,42 @@ impl Server {
             // println!("{}", req.data);
         }
     }
+    fn add_handler(&mut self, handler: Handler) {
+        if self.handler_lock {
+            println!("Cannot add handler after server initialization")
+        } else {
+            self.handlers.push(handler)
+        }
+    }
+    pub fn get(&mut self, path: &str, handler: PathHandler) -> () {
+        self.add_handler(Handler {
+            method: "GET".to_owned(),
+            path: path.to_owned(),
+            handler
+        })
+
+    }
+    pub fn post(&mut self, path: &str, handler: PathHandler) -> () {
+        self.add_handler(Handler {
+            method: "POST".to_owned(),
+            path: path.to_owned(),
+            handler
+        })
+    }
+    pub fn all(&mut self, path: &str, handler: PathHandler) -> () {
+        self.add_handler(Handler {
+            method: "".to_owned(),
+            path: path.to_owned(),
+            handler
+        })
+    }
+    pub fn other(&mut self, method: &str, path: &str, handler: PathHandler) -> () {
+        self.add_handler(Handler {
+            method: method.to_owned(),
+            path: path.to_owned(),
+            handler
+        })
+    }
+
+
 }

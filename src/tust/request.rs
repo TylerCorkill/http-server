@@ -1,10 +1,10 @@
 use std::collections::HashMap;
+use crate::tust::Handler;
 
 pub struct Request {
     pub method: String,
     pub path: String,
     pub http_version: String,
-    status: String,
     header_map: HashMap<String, String>,
     pub body: String,
 }
@@ -12,8 +12,9 @@ pub struct Request {
 #[allow(dead_code)]
 impl Request {
     pub fn new(request: &str) -> Self {
-        let (status, rest) = request.split_at(request.find("\r\n").unwrap());
-        let (_headers, data) = rest.split_at(rest.find("\r\n\r\n").unwrap());
+        // let (status, rest) = request.split_at(request.find("\r\n").unwrap());
+        let (status, rest) = request.split_once("\r\n").unwrap();
+        let (_headers, body) = rest.split_once("\r\n\r\n").unwrap();
 
         let mut status_iter = status.splitn(3, " ");
         let method = status_iter.next().unwrap().to_owned();
@@ -31,16 +32,19 @@ impl Request {
             method,
             path,
             http_version,
-            status: status.to_owned(),
             header_map,
-            body: data.to_owned(),
+            body: body.to_owned(),
         }
     }
-    pub fn header(self, header: &str) -> Option<String> {
+    pub fn header(&self, header: &str) -> Option<String> {
         if self.header_map.contains_key(header) {
             Some(self.header_map[header].to_owned())
         } else {
             None
         }
+    }
+    pub fn matches(&self, handler: &Handler) -> bool {
+        (handler.path.eq(self.path.as_str()) | handler.path.eq("*")) &
+        (handler.method.is_empty() | handler.method.eq(self.method.as_str()))
     }
 }

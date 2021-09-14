@@ -1,6 +1,6 @@
 use crate::tust::{Request, Response};
 
-type PathHandler = fn(&Request) -> Option<Response>;
+pub type PathHandler = fn(&mut Request, &mut Response) -> ();
 
 pub struct Handler {
     pub method: String,

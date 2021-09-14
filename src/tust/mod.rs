@@ -1,6 +1,7 @@
-pub use handler::Handler;
-pub use request::Request;
-pub use response::Response;
+use handler::Handler;
+use handler::PathHandler;
+use request::Request;
+use response::Response;
 pub use server::Server;
 
 mod handler;
