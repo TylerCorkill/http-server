@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use std::io::prelude::*;
 use std::net::TcpListener;
 
@@ -14,6 +15,7 @@ impl Server {
         let mut server = Server { handlers: vec![], handler_lock: false };
         start(&mut server);
         server.handlers.shrink_to_fit();
+        server.handler_lock = true;
         return server;
     }
     pub fn listen(&self, port: u16) {
@@ -21,10 +23,11 @@ impl Server {
         let listener = TcpListener::bind(address).unwrap();
 
         for stream in listener.incoming() {
+            // TODO [1] Buffer Performance
             let mut buffer = [0; 1024];
             let mut stream = stream.unwrap();
 
-            stream.read(&mut buffer).unwrap();
+            stream.read(&mut buffer);
 
             let mut req = Request::new(String::from_utf8_lossy(&buffer[..]).as_ref());
             let mut res = Response::new();
@@ -37,7 +40,8 @@ impl Server {
                     if res.complete {
                         println!("{} {}", res.status_code, res.status_text);
 
-                        stream.write(res.format().as_bytes()).unwrap();
+                        // TODO [4] Response formatter to byte slice
+                        stream.write(format!("{}", res).as_bytes()).unwrap();
                         stream.flush().unwrap();
 
                         break;
