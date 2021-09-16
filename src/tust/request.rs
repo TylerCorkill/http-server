@@ -1,4 +1,3 @@
-use crate::tust::Handler;
 use crate::tust::HeaderMap;
 
 pub struct Request {
@@ -34,9 +33,5 @@ impl Request {
             header,
             body: body.to_owned(),
         }
-    }
-    pub fn matches(&self, handler: &Handler) -> bool {
-        (handler.path.eq(self.path.as_str()) | handler.path.eq("*")) &
-        (handler.method.is_empty() | handler.method.eq(self.method.as_str()))
     }
 }

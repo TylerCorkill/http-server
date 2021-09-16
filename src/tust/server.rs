@@ -1,4 +1,3 @@
-use std::fmt::Display;
 use std::io::prelude::*;
 use std::net::TcpListener;
 
@@ -27,18 +26,17 @@ impl Server {
             let mut buffer = [0; 1024];
             let mut stream = stream.unwrap();
 
-            stream.read(&mut buffer);
+            stream.read(&mut buffer).expect("Buffer Overflow");
 
-            let mut req = Request::new(String::from_utf8_lossy(&buffer[..]).as_ref());
+            let mut req = Request::new(String::from_utf8_lossy(&buffer[..]).trim_end_matches(char::from(0)));
             let mut res = Response::new();
 
-            print!("{} {} ", req.method, req.path);
-
             for h in &self.handlers {
-                if req.matches(h) {
+                if h.matches(&req) {
                     (h.handler)(&mut req, &mut res);
                     if res.complete {
-                        println!("{} {}", res.status_code, res.status_text);
+                        // Log request and response status
+                        println!("{} {} {} {}", req.method, req.path, res.status_code, res.status_text);
 
                         // TODO [4] Response formatter to byte slice
                         stream.write(format!("{}", res).as_bytes()).unwrap();
@@ -48,16 +46,6 @@ impl Server {
                     }
                 }
             }
-
-            // Debug
-            // println!("{}", req.method);
-            // println!("{}", req.path);
-            // println!("{}", req._headers);
-            // for (h, v) in req._header_map.iter() {
-            //     println!("{}: {}", h, v);
-            // }
-            // println!("{}", req.header("Content-Type").unwrap());
-            // println!("{}", req.data);
         }
     }
     fn add_handler(&mut self, handler: Handler) {
@@ -96,6 +84,4 @@ impl Server {
             handler
         })
     }
-
-
 }

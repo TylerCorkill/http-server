@@ -10,32 +10,8 @@ pub struct Handler {
 
 #[allow(dead_code)]
 impl Handler {
-    pub fn get(path: &str, handler: PathHandler) -> Self {
-        Handler {
-            method: "GET".to_owned(),
-            path: path.to_owned(),
-            handler
-        }
-    }
-    pub fn post(path: &str, handler: PathHandler) -> Self {
-        Handler {
-            method: "POST".to_owned(),
-            path: path.to_owned(),
-            handler
-        }
-    }
-    pub fn all(path: &str, handler: PathHandler) -> Self {
-        Handler {
-            method: "".to_owned(),
-            path: path.to_owned(),
-            handler
-        }
-    }
-    pub fn other(method: &str, path: &str, handler: PathHandler) -> Self {
-        Handler {
-            method: method.to_owned(),
-            path: path.to_owned(),
-            handler
-        }
+    pub fn matches(&self, req: &Request) -> bool {
+        (self.path.eq(req.path.as_str()) | self.path.eq("*")) &
+        (self.method.is_empty() | self.method.eq(req.method.as_str()))
     }
 }
