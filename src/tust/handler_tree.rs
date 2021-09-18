@@ -10,6 +10,7 @@ pub struct HandlerTree {
     handlers: Vec<PathHandler>
 }
 
+// TODO [8] Shrink HandlerTree vectors to fit
 impl HandlerTree {
     pub fn new() -> Self {
         HandlerTree {
@@ -20,6 +21,8 @@ impl HandlerTree {
         }
     }
 
+    // TODO [6] Add wildcards to resolver
+    // TODO [7] Add path variables to resolver
     pub fn resolve(&self, req: &mut Request, res: &mut Response) {
         let p = req.path.clone();
         let path: Vec<&str> = p.split("/").skip(1).collect();
