@@ -52,36 +52,31 @@ impl HandlerTree {
         HandlerTree::add_recurse(self, &path, method, handler);
     }
     fn add_recurse(node: &mut HandlerTree, path_vec: &[&str], method: &str, path_handler: PathHandler) {
-        let mut path_found = false;
-
         for (i, child) in node.children.iter().enumerate() {
             if child.path.eq(path_vec[0]) & child.method.eq(method) {
-                path_found = true;
                 if path_vec.len() == 1 {
                     node.children[i].handlers.push(path_handler.to_owned());
                 } else {
                     HandlerTree::add_recurse(&mut node.children[i], &path_vec[1..], method, path_handler);
                 }
-                break;
+                return;
             }
         }
 
-        if !path_found {
-            node.children.push(HandlerTree {
-                path: path_vec[0].to_owned(),
-                method: "".to_owned(),
-                children: vec![],
-                handlers: vec![]
-            });
+        node.children.push(HandlerTree {
+            path: path_vec[0].to_owned(),
+            method: "".to_owned(),
+            children: vec![],
+            handlers: vec![]
+        });
 
-            let handler_tree = node.children.last_mut().unwrap();
+        let handler_tree = node.children.last_mut().unwrap();
 
-            if path_vec.len() == 1 {
-                handler_tree.method = method.to_owned();
-                handler_tree.handlers.push(path_handler)
-            } else {
-                HandlerTree::add_recurse(handler_tree, &path_vec[1..], method, path_handler);
-            }
+        if path_vec.len() == 1 {
+            handler_tree.method = method.to_owned();
+            handler_tree.handlers.push(path_handler)
+        } else {
+            HandlerTree::add_recurse(handler_tree, &path_vec[1..], method, path_handler);
         }
     }
 
