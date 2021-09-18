@@ -43,7 +43,7 @@ impl Display for Response {
         if self.body.is_empty() {
             write!(
                 formatter,
-                "{} {} {}\r\n{}",
+                "{} {} {}\r\n{}\r\n",
                 self.http_version,
                 self.status_code,
                 self.status_text,
