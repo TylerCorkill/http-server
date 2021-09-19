@@ -14,6 +14,7 @@ impl Server {
         let mut server = Server { handler_lock: false, handler_tree: HandlerTree::new() };
         start(&mut server);
         server.handler_tree.print_tree(0);
+        server.handler_tree.shrink_to_fit();
         server.handler_lock = true;
         println!("Initialization Complete");
         return server;

@@ -10,7 +10,6 @@ pub struct HandlerTree {
     handlers: Vec<PathHandler>
 }
 
-// TODO [8] Shrink HandlerTree vectors to fit
 impl HandlerTree {
     pub fn new() -> Self {
         HandlerTree {
@@ -84,6 +83,17 @@ impl HandlerTree {
         println!("handler: {} {} {}", self.method, self.path, level);
         for handler in &self.children {
             handler.print_tree(level + 1);
+        }
+    }
+
+    pub fn shrink_to_fit(&mut self) {
+        self.path.shrink_to_fit();
+        self.method.shrink_to_fit();
+        self.children.shrink_to_fit();
+        self.handlers.shrink_to_fit();
+
+        for child in &mut self.children {
+            child.shrink_to_fit();
         }
     }
 }
