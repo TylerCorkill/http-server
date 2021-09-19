@@ -47,8 +47,22 @@ fn main() {
             // res.body = "asdf".to_owned();
             res.complete = true;
         });
-        // app.all("*", |_, res| {
-        //     res.error("");
+
+        app.get("/test/*", |_, res| {
+            println!("BINGO");
+            // res.success("");
+            res.status_code = 404;
+            res.status_text = String::from("ERROR");
+            // res.header.set("Con", "22");
+            // res.body = "asdf".to_owned();
+            res.complete = true;
+        });
+        // app.all("/*", |_, res| {
+        //     res.status_code = 500;
+        //     res.status_text = String::from("ERROR");
+        //     // res.header.set("Con", "22");
+        //     // res.body = "asdf".to_owned();
+        //     res.complete = true;
         // });
     }).listen(8080);
 }

@@ -20,7 +20,6 @@ impl HandlerTree {
         }
     }
 
-    // TODO [6] Add wildcards to resolver
     // TODO [7] Add path variables to resolver
     pub fn resolve(&self, req: &mut Request, res: &mut Response) {
         let p = req.path.clone();
@@ -31,9 +30,9 @@ impl HandlerTree {
         if res.complete { return; }
 
         for child in &node.children {
-            if child.path.eq(path_vec[0]) {
+            if child.path.eq(path_vec[0]) | child.path.eq("*") {
                 if path_vec.len() == 1 {
-                    if req.method.eq(&child.method) {
+                    if child.method.eq(&req.method) | child.method.eq("*") {
                         for h in &child.handlers {
                             h(req, res);
                             if res.complete { return; }
