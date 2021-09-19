@@ -9,4 +9,4 @@ After initialization, the server should produce error messages instead of crashi
 Performance is paramount and new features should not impact performane. Occasionally bug fixes will impact performance if they have to.
 
 ### 3. Abstraction
-Complexity should be abstracted away as long as this has no impact on stability or performance. This is in line with the [KISS Principle](https://en.wikipedia.org/wiki/KISS_principle.
+Complexity should be abstracted away as long as it has no impact on stability or performance. This is in line with the [KISS Principle](https://en.wikipedia.org/wiki/KISS_principle).
