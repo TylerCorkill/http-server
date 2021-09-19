@@ -6,7 +6,7 @@ Tust is an HTTP server modeled after Express.js
 After initialization, the server should produce error messages instead of crashing at all times. A request should never be able to crash the server.
 
 ### 2. Performance
-Performance is paramount and new features should not impact performand. Occasionally bug fixes will impact performance if they have to.
+Performance is paramount and new features should not impact performane. Occasionally bug fixes will impact performance if they have to.
 
 ### 3. Abstraction
-Complexity should be abstracted away as long as this has no performance impact. This is in line with the [KISS Principle](https://en.wikipedia.org/wiki/KISS_principle.
+Complexity should be abstracted away as long as this has no impact on stability or performance. This is in line with the [KISS Principle](https://en.wikipedia.org/wiki/KISS_principle.
