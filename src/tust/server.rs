@@ -13,7 +13,6 @@ impl Server {
     pub fn init(start: fn(&mut Server) -> ()) -> Self {
         let mut server = Server { handler_lock: false, handler_tree: HandlerTree::new() };
         start(&mut server);
-        server.handler_tree.print_tree(0);
         server.handler_tree.shrink_to_fit();
         server.handler_lock = true;
         println!("Initialization Complete");
@@ -38,7 +37,7 @@ impl Server {
             let mut req = Request::new(&String::from_utf8_lossy(&buffer[..end_index]));
             let mut res = Response::new();
 
-            self.handler_tree.resolve(&mut req, &mut res);
+            self.resolve(&mut req, &mut res);
 
             if res.complete {
                 // Log request and response status
@@ -52,13 +51,23 @@ impl Server {
             }
         }
     }
+
+    // Handler Tree fns
+    fn resolve(&self, req: &mut Request, res: &mut Response) {
+        let p = req.path.clone();
+        let path: Vec<&str> = p.split("/").skip(1).collect();
+        self.handler_tree.resolve(&path, req, res);
+    }
     fn add_handler(&mut self, method: &str, path: &str, handler: PathHandler) {
         if self.handler_lock {
             println!("Cannot add handler after server initialization")
         } else {
-            self.handler_tree.add(method, path, handler.to_owned());
+            let path: Vec<&str> = path.split("/").skip(1).collect();
+            self.handler_tree.add(method, &path, handler);
         }
     }
+
+    // Handler adders
     pub fn get(&mut self, path: &str, handler: PathHandler) -> () {
         self.add_handler(
             "GET",

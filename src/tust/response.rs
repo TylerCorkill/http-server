@@ -11,6 +11,7 @@ pub struct Response {
     pub complete: bool
 }
 
+#[allow(dead_code)]
 impl Response {
     pub fn new() -> Self {
         Response {

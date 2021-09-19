@@ -5,6 +5,7 @@ pub struct HeaderMap {
     header_map: HashMap<String, String>,
 }
 
+#[allow(dead_code)]
 impl HeaderMap {
     pub fn new() -> Self {
         HeaderMap {
