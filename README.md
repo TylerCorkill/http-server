@@ -1,7 +1,7 @@
 # Tust
-![example workflow](https://github.com/TylerCorkill/tust-server/actions/workflows/rust.yml/badge.svg)
-
 Tust is an HTTP server modeled after Express.js
+
+![example workflow](https://github.com/TylerCorkill/tust-server/actions/workflows/rust.yml/badge.svg)
 
 ## Tenants
 ### 1. Stability
