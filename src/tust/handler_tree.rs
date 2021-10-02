@@ -26,7 +26,16 @@ impl HandlerTree {
         if res.complete { return; }
 
         for child in &self.children {
-            if child.path.eq(path_vec[0]) | child.path.eq("*") {
+            let is_var = child.path.chars().nth(0) == Some(':');
+
+            if child.path.eq(path_vec[0]) | child.path.eq("*") | is_var {
+                if is_var {
+                    let key = &child.path[1..];
+                    let value = path_vec[0];
+
+                    req.path_variables.insert(key.to_string(), value.to_string());
+                }
+
                 if path_vec.len() == 1 {
                     if child.method.eq(&req.method) | child.method.eq("*") {
                         for h in &child.handlers {
@@ -36,6 +45,11 @@ impl HandlerTree {
                     }
                 } else {
                     child.resolve(&path_vec[1..], req, res);
+                }
+
+                if is_var {
+                    let key = &child.path[1..];
+                    req.path_variables.remove(key);
                 }
             }
         }

@@ -1,8 +1,11 @@
+use std::collections::HashMap;
+
 use crate::tust::HeaderMap;
 
 pub struct Request {
     pub method: String,
     pub path: String,
+    pub path_variables: HashMap<String, String>,
     pub http_version: String,
     pub header: HeaderMap,
     pub body: String,
@@ -29,6 +32,7 @@ impl Request {
         Request {
             method,
             path,
+            path_variables: HashMap::new(),
             http_version,
             header,
             body: body.to_owned(),
