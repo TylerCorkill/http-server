@@ -71,7 +71,14 @@ impl Server {
         }
     }
 
-    // Handler adders
+    // Method Handlers
+    pub fn all(&mut self, path: &str, handler: PathHandler) -> () {
+        self.add_handler(
+            "*",
+            path,
+            handler
+        )
+    }
     pub fn get(&mut self, path: &str, handler: PathHandler) -> () {
         self.add_handler(
             "GET",
@@ -86,16 +93,51 @@ impl Server {
             handler
         )
     }
-    pub fn all(&mut self, path: &str, handler: PathHandler) -> () {
+    pub fn put(&mut self, path: &str, handler: PathHandler) -> () {
         self.add_handler(
-            "*",
+            "PUT",
             path,
             handler
         )
     }
-    pub fn other(&mut self, method: &str, path: &str, handler: PathHandler) -> () {
+    pub fn head(&mut self, path: &str, handler: PathHandler) -> () {
         self.add_handler(
-            method,
+            "HEAD",
+            path,
+            handler
+        )
+    }
+    pub fn delete(&mut self, path: &str, handler: PathHandler) -> () {
+        self.add_handler(
+            "DELETE",
+            path,
+            handler
+        )
+    }
+    pub fn connect(&mut self, path: &str, handler: PathHandler) -> () {
+        self.add_handler(
+            "CONNECT",
+            path,
+            handler
+        )
+    }
+    pub fn options(&mut self, path: &str, handler: PathHandler) -> () {
+        self.add_handler(
+            "OPTIONS",
+            path,
+            handler
+        )
+    }
+    pub fn trace(&mut self, path: &str, handler: PathHandler) -> () {
+        self.add_handler(
+            "TRACE",
+            path,
+            handler
+        )
+    }
+    pub fn patch(&mut self, path: &str, handler: PathHandler) -> () {
+        self.add_handler(
+            "PATCH",
             path,
             handler
         )
