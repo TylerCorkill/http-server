@@ -60,7 +60,11 @@ impl Server {
     }
     fn add_handler(&mut self, method: &str, path: &str, handler: PathHandler) {
         if self.handler_lock {
-            println!("Cannot add handler after server initialization")
+            panic!("Cannot add handler after server initialization");
+        } else if !path.starts_with('/') {
+            panic!("Path {} must start with '/'", path);
+        } else if path.ends_with('/') {
+            panic!("Path {} cannot end with '/'", path);
         } else {
             let path: Vec<&str> = path.split("/").skip(1).collect();
             self.handler_tree.add(method, &path, handler);
