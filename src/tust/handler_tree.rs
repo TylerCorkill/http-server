@@ -21,7 +21,6 @@ impl HandlerTree {
         }
     }
 
-    // TODO [7] Add path variables to resolver
     pub fn resolve(&self, path_vec: &[&str], req: &mut Request, res: &mut Response) {
         if res.complete { return; }
 
