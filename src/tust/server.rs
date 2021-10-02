@@ -44,8 +44,8 @@ impl Server {
                 println!("{} {} {} {}", req.method, req.path, res.status_code, res.status_text);
 
                 // TODO [4] Response formatter to byte slice
-                stream.write(format!("{}", res).as_bytes()).unwrap();
-                stream.flush().unwrap();
+                stream.write(format!("{}", res).as_bytes()).expect("Failed to write to stream");
+                stream.flush().expect("Failed to flush stream");
             } else {
                 println!("{} {} Unhandled Route", req.method, req.path);
             }
