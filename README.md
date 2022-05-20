@@ -5,6 +5,8 @@
 # Tust
 Tust is an HTTP server modeled after Express.js
 
+Tust is experimental and not production ready. Use with caution.
+
 ## Tenants
 ### 1. Stability
 After initialization, the server should produce error messages instead of crashing at all times. A request should never be able to crash the server.
